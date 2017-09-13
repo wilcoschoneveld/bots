@@ -11,6 +11,7 @@ class Agent(Player):
 
         self.states = OrderedDict()
         self.init_values()
+        self.explore = 0.1
 
     def init_values(self):
         from tictactoe.game import TicTacToe
@@ -42,6 +43,9 @@ class Agent(Player):
 
     def decide_move(self, state):
         possible_moves = [i + 1 for i in range(9) if state[i] == '-']
+
+        if random.random() <= self.explore:
+            return random.choice(possible_moves)
 
         expected_values = {}
 
