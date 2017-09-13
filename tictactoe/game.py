@@ -16,9 +16,17 @@ class TicTacToe(object):
         self.player2.set_symbol('O')
 
         self.state = ['-'] * 9
-
-        self.turn_p1 = True  # player1's turn
+        self.turn_p1 = True
         self.finished = False
+        self.winner = None
+
+        self.print = True
+
+    def reset(self):
+        self.state = ['-'] * 9
+        self.finished = False
+        self.winner = None
+        self.turn_p1 = True
 
     def next_turn(self):
         # Make sure game is not finished
@@ -29,6 +37,9 @@ class TicTacToe(object):
 
         # Ask player for move
         move = player.decide_move(self.state)
+
+        if self.print:
+            print("{} chooses move {}".format(player.name, move))
 
         # Check move for validity
         assert type(move) is int
@@ -52,12 +63,19 @@ class TicTacToe(object):
 
             for line in self.win_with:
                 if all(has(x) for x in line):
-                    player.win()
+                    if self.print:
+                        print('{} WINS!!!!!!!!! *CONFETTI*'.format(player.name))
+
+                    self.winner = player
+                    self.finished = True
                     return True
 
         def check_draw():
             if all(s != '-' for s in self.state):
-                print("It's a draw!")
+                if self.print:
+                    print("It's a draw!")
+
+                self.finished = True
                 return True
 
         return check_win(self.player1) or check_win(self.player2) or check_draw()

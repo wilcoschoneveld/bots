@@ -25,7 +25,6 @@ class Agent(Player):
         self.states[''.join(state)] = value
 
     def get_value(self, state):
-
         convert = {
             '-': '-',
             self.symbol or 'X': 'X'
@@ -57,8 +56,6 @@ class Agent(Player):
         greedy_moves = [move for move, value in expected_values.items() if value >= max_value]
 
         chosen_move = random.choice(greedy_moves)
-
-        print("{} chooses move {}".format(self.name, chosen_move))
 
         return chosen_move
 
