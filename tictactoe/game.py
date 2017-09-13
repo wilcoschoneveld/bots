@@ -11,8 +11,13 @@ class TicTacToe(object):
     def __init__(self, player1, player2):
         self.player1 = player1
         self.player2 = player2
-        self.turn_p1 = True  # player1's turn
+
+        self.player1.set_symbol('X')
+        self.player2.set_symbol('O')
+
         self.state = ['-'] * 9
+
+        self.turn_p1 = True  # player1's turn
         self.finished = False
 
     def next_turn(self):
@@ -31,7 +36,7 @@ class TicTacToe(object):
         assert self.state[move - 1] == '-'
 
         # Perform move
-        self.state[move - 1] = 'X' if self.turn_p1 else 'O'
+        self.state[move - 1] = player.symbol
 
         # Check game state
         if self.check_state():
@@ -43,8 +48,7 @@ class TicTacToe(object):
     def check_state(self):
         def check_win(player):
             def has(x):
-                to_check = ('X' if (player == self.player1) else 'O')
-                return self.state[x - 1] == to_check
+                return self.state[x - 1] == player.symbol
 
             for line in self.win_with:
                 if all(has(x) for x in line):
