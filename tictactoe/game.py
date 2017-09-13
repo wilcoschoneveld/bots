@@ -23,7 +23,7 @@ class TicTacToe(object):
         player = self.player1 if self.turn_p1 else self.player2
 
         # Ask player for move
-        move = player.decide_move()
+        move = player.decide_move(self.state)
 
         # Check move for validity
         assert type(move) is int
@@ -51,7 +51,12 @@ class TicTacToe(object):
                     player.win()
                     return True
 
-        return check_win(self.player1) or check_win(self.player2)
+        def check_draw():
+            if all(s != '-' for s in self.state):
+                print("It's a draw!")
+                return True
+
+        return check_win(self.player1) or check_win(self.player2) or check_draw()
 
     def _repr_html_(self):
         html = """
