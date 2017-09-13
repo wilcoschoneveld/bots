@@ -10,25 +10,15 @@ class Agent(Player):
         super().__init__(name)
 
         self.states = OrderedDict()
-        self.init_values()
         self.explore = 0.1
         self.learning_rate = 0.1
         self.prev_state = None
-
-    def init_values(self):
-        from tictactoe.game import TicTacToe
-
-        for line in TicTacToe.win_with:
-            state = ['*'] * 9
-            for i in line:
-                state[i - 1] = 'X'
-            self.set_value(state, 1)
 
     def convert_state(self, state):
         convert = {
             '-': '-',
             '*': '*',
-            self.symbol or 'X': 'X'
+            self.symbol: 'X'
         }
 
         return [convert.get(s, 'O') for s in state]
@@ -48,6 +38,18 @@ class Agent(Player):
                 return value
 
         return 0.5
+
+    def update_value(self, new_value):
+        if self.learning_rate and self.prev_state:
+            old_value = self.get_value(self.prev_state)
+            upd_value = old_value + self.learning_rate * (new_value - old_value)
+            self.set_value(self.prev_state, upd_value)
+
+    def end(self, winner):
+        if winner and winner is self:
+            self.update_value(1)
+        if winner and winner is not self:
+            self.update_value(0)
 
     def decide_move(self, state):
         possible_moves = [i + 1 for i in range(9) if state[i] == '-']
@@ -76,15 +78,9 @@ class Agent(Player):
 
         chosen_move = random.choice(greedy_moves)
 
-        to_state = move_to_state[chosen_move]
+        self.update_value(max_value)
 
-        if self.learning_rate and self.prev_state:
-            new_value = self.get_value(to_state)
-            old_value = self.get_value(self.prev_state)
-            upd_value = old_value + self.learning_rate * (new_value - old_value)
-            self.set_value(self.prev_state, upd_value)
-
-        self.prev_state = to_state
+        self.prev_state = move_to_state[chosen_move]
 
         return chosen_move
 

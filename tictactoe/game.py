@@ -51,6 +51,9 @@ class TicTacToe(object):
 
         # Check game state
         if self.check_state():
+            self.player1.end(self.winner)
+            self.player2.end(self.winner)
+
             self.finished = True
 
         # Switch turns
@@ -67,7 +70,6 @@ class TicTacToe(object):
                         print('{} WINS!!!!!!!!! *CONFETTI*'.format(player.name))
 
                     self.winner = player
-                    self.finished = True
                     return True
 
         def check_draw():
@@ -75,7 +77,6 @@ class TicTacToe(object):
                 if self.print:
                     print("It's a draw!")
 
-                self.finished = True
                 return True
 
         return check_win(self.player1) or check_win(self.player2) or check_draw()
