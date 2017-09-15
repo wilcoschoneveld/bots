@@ -17,27 +17,20 @@ class Agent(Player):
     def convert_state(self, state):
         convert = {
             '-': '-',
-            '*': '*',
             self.symbol: 'X'
         }
 
-        return [convert.get(s, 'O') for s in state]
+        return ''.join(convert.get(s, 'O') for s in state)
 
     def set_value(self, state, value):
-        converted_state = self.convert_state(state)
+        _hash = self.convert_state(state)
 
-        self.states[''.join(converted_state)] = value
+        self.states[_hash] = value
 
     def get_value(self, state):
-        converted_state = self.convert_state(state)
+        _hash = self.convert_state(state)
 
-        for stored_state, value in self.states.items():
-            match = all(i == '*' or i == j for i, j in zip(stored_state, converted_state))
-
-            if match:
-                return value
-
-        return 0.5
+        return self.states.get(_hash, 0.5)
 
     def update_value(self, new_value):
         if self.learning_rate and self.prev_state:
