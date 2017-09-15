@@ -3,6 +3,17 @@ from collections import OrderedDict
 
 from tictactoe.player import Player
 
+invariants = [
+    [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [7, 4, 1, 8, 5, 2, 9, 6, 3],
+    [9, 8, 7, 6, 5, 4, 3, 2, 1],
+    [3, 6, 9, 2, 5, 8, 1, 4, 7],
+    [7, 8, 9, 4, 5, 6, 1, 2, 3],
+    [9, 6, 3, 8, 5, 2, 7, 4, 1],
+    [3, 2, 1, 6, 5, 4, 9, 8, 7],
+    [1, 4, 7, 2, 5, 8, 3, 6, 9]
+]
+
 
 class Agent(Player):
 
@@ -20,17 +31,32 @@ class Agent(Player):
             self.symbol: 'X'
         }
 
-        return ''.join(convert.get(s, 'O') for s in state)
+        hashes = []
+
+        for i in invariants:
+            _hash = ''.join(convert.get(state[j - 1], '0') for j in i)
+            hashes.append(_hash)
+
+        return hashes
 
     def set_value(self, state, value):
-        _hash = self.convert_state(state)
+        hashes = self.convert_state(state)
 
-        self.states[_hash] = value
+        for h in hashes:
+            if h in self.states:
+                self.states[h] = value
+                return
+
+        self.states[hashes[0]] = value
 
     def get_value(self, state):
-        _hash = self.convert_state(state)
+        hashes = self.convert_state(state)
 
-        return self.states.get(_hash, 0.5)
+        for h in hashes:
+            if h in self.states:
+                return self.states[h]
+
+        return 0.5
 
     def update_value(self, new_value):
         if self.learning_rate and self.prev_state:
