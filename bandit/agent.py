@@ -3,10 +3,11 @@ import random
 
 class Agent(object):
 
-    def __init__(self, slots, greedy=0.9, step_size='average'):
+    def __init__(self, slots, greedy=0.9, step_size='average', initial_value=0):
         self.slots = slots
         self.greedy = greedy
         self.step_size = step_size
+        self.initial_value = initial_value
 
         self.estimates = {}
         self.reset()
@@ -15,7 +16,7 @@ class Agent(object):
         for slot in self.slots:
             self.estimates[slot] = {
                 'chosen': 0,    
-                'value': 0
+                'value': self.initial_value
             }
 
     def get_step_size(self, slot):
@@ -55,5 +56,5 @@ class Agent(object):
 
         self.set_value(slot, new_value)
 
-        return reward
+        return slot, reward
 
